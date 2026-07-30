@@ -17,7 +17,7 @@ meetup_image(out_file = 'welcome.png',
 			 date = ' ')
 ```
 
-Welcome to DATA606! Your instructors will be Dr. Jason Bryer and Dr. Angela Lui. Couple of important notes as you get started:
+Welcome to DATA606! Your instructors will be Dr. Jason Bryer, Dr. Angela Lui, and Christian Martinez. Couple of important notes as you get started:
 
 * The course syllabus located on this website here: [https://`r tolower(semester)``r year`.data606.net/course/syllabus.html](https://`r tolower(semester)``r year`.data606.net/course/syllabus.html) I will post all course materials there. Blackboard will be used primarily for submitting assignments. Please read the syllabus carefully! Send us any questions you may still have about the course.
 
@@ -25,7 +25,7 @@ Welcome to DATA606! Your instructors will be Dr. Jason Bryer and Dr. Angela Lui.
 
 * [Join the Slack channel by clicking here](`r slack_invite_link`) (or use your @sps.cuny.edu email address). This will be our primary mode of communication. 
 
-* For private communications, you can either send private Slack messages or email us at [jason.bryer@cuny.edu,](mailto:jason.bryer@cuny.edu?subject=DATA606) or [angela.lui@cuny.edu](mailto:angela.lui@cuny.edu?subject=DATA606).
+* For private communications, you can either send private Slack messages or email us at [jason.bryer@cuny.edu,](mailto:jason.bryer@cuny.edu?subject=DATA606), [angela.lui@cuny.edu](mailto:angela.lui@cuny.edu?subject=DATA606), or [c.martinez0@outlook.com](mailto:c.martinez0@outlook.com?subject=DATA606).
 
 * Complete the self-regulated learning assessment in DAACS. Visit [/assignments/daacs.html](/assignments/daacs.html) for more information.
 
