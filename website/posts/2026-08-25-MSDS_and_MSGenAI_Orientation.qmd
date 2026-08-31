@@ -1,0 +1,15 @@
+---
+title: "MSDS and MSGenAI Orientation"
+author: "Jason Bryer"
+date: 2026-08-25
+draft: false
+description: "Slides and recording for the *MSDS and MSGenAI Orientation* meetup."
+categories: ["Meetups"]
+image: "2026-08-25-MSDS_and_MSGenAI_Orientation.png"
+---
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/https://youtu.be/OTHZTFeBsJE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
