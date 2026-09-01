@@ -1,8 +1,8 @@
 ---
 title: "Introduction to DATA 606"
 subtitle: "Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "Spring 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "Fall 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -75,11 +75,20 @@ class: center, middle, inverse, title-slide
 
 ---
 
-# Also a Father...
+# Built a van...
 
-```{r, out.width='65%', fig.align='center', echo=FALSE}
-knitr::include_graphics('images/BoysFall2019.jpg')
+.pull-left[
+```{r, out.width='100%', fig.align='center', echo=FALSE}
+knitr::include_graphics('images/BryerVan1.jpeg')
 ```
+
+]
+.pull-right[
+```{r, out.width='100%', fig.align='center', echo=FALSE}
+knitr::include_graphics('images/BryerVan2.jpeg')
+```
+
+]
 
 ---
 
@@ -145,6 +154,22 @@ knitr::include_graphics('images/Sleeping_Empire.jpg')
 <img src='images/Lui_home2.png' height='450' />
 ]
 
+---
+# Christian Martinez
+
+.pull-left[
+<img alt='Christian Martinez' src='images/christian_martinez.jpg' height='500' />
+]
+.pull-right[
+
+* Adjunct Lecturer at the City University of New York
+* Founder and Director of the NYC Open Data Lab. 
+* My work centers on data science, reproducible research, open-source software, and helping people use public data more effectively. 
+* Created the nycOpenData R package and an expanding ecosystem of OpenData packages that make government open data easier to access and analyze directly in R. 
+* My open-source and community work was recognized with the inaugural 2026 Posit Impact Award in Open Source Contribution.
+
+When I’m not doing any of this fun stuff, I’m on the handball court—always ready for a new challenger.
+]
 
 ---
 
@@ -321,7 +346,7 @@ The goal of this course is for *you to develop the foundation knowledge and skil
 * Slack Channel: `r slack_link`
 	* [Click here to join the group](`r slack_invite_link`)
 
-* Email: [jason.bryer@cuny.edu and angela.lui@cuny.edu](mailto:jason.bryer@cuny.edu;angela.lui@cuny.edu?subject=DATA606)
+* Email: [jason.bryer@cuny.edu, angela.lui@cuny.edu, and c.martinez0@outlook.com](mailto:jason.bryer@cuny.edu;angela.lui@cuny.edu;c.martinez0@outlook.com?subject=DATA606)
 
 * Phone/Zoom: Please email to schedule a time to meet.
 
@@ -379,7 +404,7 @@ This will copy the R markdown file and any supporting files to your current work
 ---
 # Next steps... `r hexes(c('DAACS'))`
 
-Before Sunday (February 1st):
+Before Sunday (September 6th):
 
 * Complete this Google form: `r formative_assessment`
 * Go to https://cuny.daacs.net and complete the self-regulated learning assessment
@@ -387,7 +412,7 @@ Before Sunday (February 1st):
 
 Then:
 
-* Start Lab 1 (due February 8th)
+* Start Lab 1 (due September 6th)
 
 ---
 class: inverse, right, middle, hide-logo
@@ -398,6 +423,7 @@ class: inverse, right, middle, hide-logo
 
 [`r icons::fontawesome("paper-plane")` jason.bryer@cuny.edu](mailto:jason.bryer@cuny.edu)  
 [`r icons::fontawesome("paper-plane")` angela.lui@cuny.edu](mailto:angela.lui@cuny.edu)  
+[`r icons::fontawesome("paper-plane")` c.martinez0@outlook.com](mailto:c.martinez0@outlook.com)  
 [`r icons::fontawesome("slack")` `r gsub('https://', '', slack_link)`](`r slack_link`)  
 [`r icons::fontawesome("github")` @jbryer](https://github.com/jbryer)  
 [`r icons::fontawesome('mastodon')` @jbryer@vis.social](https://vis.social/@jbryer)  

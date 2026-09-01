@@ -9,7 +9,7 @@ image: "2026-08-25-MSDS_and_MSGenAI_Orientation.png"
 ---
 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/https://youtu.be/OTHZTFeBsJE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bdOZOmdE2Nw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 
