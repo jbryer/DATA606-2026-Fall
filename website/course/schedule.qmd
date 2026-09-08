@@ -25,7 +25,7 @@ schedule$Date <- format(schedule$Date, '%a, %b %d')
 
 links <- !is.na(schedule$Link)
 if(sum(links) > 0) {
-	# tmp <- paste0(' <a href="', schedule[links,]$Link, '">', icons::fontawesome('readme'), '</a>')
+	# tmp <- paste0(' <a href="', schedule[links,]$Link, '">', fontawesome::fa('readme'), '</a>')
 	# tmp <- gsub('\\n', '', tmp)
 	# schedule[links,]$Link <- tmp
 	schedule[links,]$Topic <- paste0('[', schedule[links,]$Topic, '](',
@@ -36,10 +36,10 @@ slides <- !is.na(schedule$Slides)
 if(sum(slides) > 0) {
 	slide_links <- paste0(
 		'<a href="', slides_uri, schedule[slides,]$Slides, '.html" target="_new">', 
-		icons::fontawesome('safari'), '</a>',
+		fontawesome::fa('safari', fill = 'black'), '</a>',
 		'&nbsp;&nbsp;',
 		'<a href="', slides_uri, schedule[slides,]$Slides, '.pdf" target="_new">', 
-		icons::fontawesome('file-pdf'), '</a>'
+		fontawesome::fa('file-pdf', fill = 'black'), '</a>'
 	)
 	slide_links <- gsub('\\n', '', slide_links)
 	schedule[slides,]$Slides <- slide_links
@@ -49,7 +49,7 @@ video <- !is.na(schedule$Video)
 if(sum(video) > 0) {
 	video_links <- paste0(
 		'<a href="https://youtu.be/', schedule[video,]$Video, '" target="_new">',
-		icons::fontawesome('youtube'), '</a>'
+		fontawesome::fa('youtube', fill = 'black'), '</a>'
 	)
 	video_links <- gsub('\\n', '', video_links)
 	schedule[video,]$Video <- video_links

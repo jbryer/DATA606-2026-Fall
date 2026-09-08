@@ -1,8 +1,8 @@
 ---
 title: "Intro to Data"
 subtitle: "DATA 606 - Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "February 2, 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "September 7, 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -420,8 +420,6 @@ ggplot() + geom_histogram(aes(x = mean_differences), bins = 20, fill = 'grey70')
 ```
 ]
 
-
-
 ---
 class: left, font140
 # One Minute Paper
@@ -432,8 +430,15 @@ class: left, font140
 ]
 .pull-right[
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-qrcode::qr_code(one_minute_paper) |> plot(col = c('#FAFAFA', 'black'))
+omp_link <- get_omp_link(
+	course = course,
+	semester = paste0(semester, year),
+	topic = 'Intro to Data'
+)
+qrcode::qr_code(omp_link) |> plot(col = c('#FAFAFA', 'black'))
 ```
+.center[.font50[[Scan the QR code or click here to  
+complete the One Minute Paper](`r omp_link`)]]
 ]
 
-`r one_minute_paper`
+

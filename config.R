@@ -5,8 +5,7 @@ class_day <- 'Monday'
 class_time <- '8:00pm to 9:00pm'
 description <- paste0(course, ' Statistics & Probability Fall ', semester, ' ', year)
 github_link <- "DATA606-2026-Fall"
-one_minute_paper <- 'https://forms.gle/rZYPdWXVjbATjxXD9'
-one_minute_paper_results <- 'https://docs.google.com/spreadsheets/d/1zwm5W5oSZEbYf0KMqX_efacgkV6ak4-XDLLbORcBUVY/edit?resourcekey&usp=forms_web_b&urp=linked#gid=1179843942'
+one_minute_paper_results <- 'https://docs.google.com/spreadsheets/d/1b4quQwk8sRzHaQN0nH2n6zFwMxCdZE_eUx_zy7kGtQg/edit?resourcekey=&gid=1311230636#gid=1311230636'
 formative_assessment <- 'https://forms.gle/7QKPCx3YPFyHJnKQ6'
 formative_assessmnet_results <- 'https://docs.google.com/spreadsheets/d/1OVY6v8cuoHVh_l6oj4Uvf6kHSd2lPqLNxM-zQGqVofc/edit?resourcekey=&gid=1802121227#gid=1802121227'
 slack_invite_link <- 'https://cuny-msds.slack.com/archives/C0A65FTPNH0'
@@ -59,6 +58,26 @@ ggplot2::update_theme(
 # The following is to fix a DT::datatable issue with Xaringan
 # https://github.com/yihui/xaringan/issues/293
 options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+
+##### Utility Functions ############################################################################
+get_omp_link <- function(semester, topic, course) {
+	omp_base_link <- 'https://docs.google.com/forms/d/e/1FAIpQLSdkRhGhJpsgc_0LxAmJpemlf7bni8Qs0ZUmovOVvHaOwOQyhA/viewform?usp=pp_url'
+	course_param <- 'entry.1379071784'
+	semester_param <- 'entry.603740146'
+	topic_param <- 'entry.1577539103'
+	
+	link <- omp_base_link
+	if(!missing(semester)) {
+		link <- paste0(link, '&', semester_param, '=', utils::URLencode(semester))
+	}
+	if(!missing(topic)) {
+		link <- paste0(link, '&', topic_param, '=', utils::URLencode(topic))
+	}
+	if(!missing(course)) {
+		link <- paste0(link, '&', course_param, '=', utils::URLencode(course))
+	}
+	return(link)
+}
 
 # This style was adapted from Max Kuhn: https://github.com/rstudio-conf-2020/applied-ml
 # And Rstudio::conf 2020: https://github.com/rstudio-conf-2020/slide-templates/tree/master/xaringan
