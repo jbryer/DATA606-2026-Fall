@@ -102,7 +102,7 @@ website:
             text: "Project"
           - href: assignments/exams.qmd
             text: "Exams"
-          - href: assignments/homework.qmd
+          - href: assignments/homework_ungraded.qmd
             text: "Homework"
       - section: "Topics"
         contents:
