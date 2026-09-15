@@ -19,7 +19,7 @@ meetup_image(out_file = 'welcome.png',
 
 Welcome to DATA606! Your instructors will be Dr. Jason Bryer, Dr. Angela Lui, and Christian Martinez. Couple of important notes as you get started:
 
-* The course syllabus located on this website here: [https://`r tolower(semester)``r year`.data606.net/course/syllabus.html](https://`r tolower(semester)``r year`.data606.net/course/syllabus.html) I will post all course materials there. Blackboard will be used primarily for submitting assignments. Please read the syllabus carefully! Send us any questions you may still have about the course.
+* The course syllabus located on this website here: [https://`r tolower(semester)``r year`.data606.net/course/syllabus.html](https://`r tolower(semester)``r year`.data606.net/course/syllabus.html) I will post all course materials there. Brightspace will be used primarily for submitting assignments. Please read the syllabus carefully! Send us any questions you may still have about the course.
 
 * Complete this [Google Form](`r formative_assessment`) as soon as possible. I will use some of the data (in aggregate) in the meetup.
 

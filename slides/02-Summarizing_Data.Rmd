@@ -1,8 +1,8 @@
 ---
 title: "Summarizing Data"
 subtitle: "DATA 606 - Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "November 9, 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "September 14, 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -37,6 +37,12 @@ class: center, middle, inverse, title-slide
 ### `r metadata$author`
 ### `r metadata$date`
 
+---
+# Announcements
+
+* Mirian Lima talking about how to provide your judgement to agents at [New York Open Statistical Programming Meetup](https://nyhackr.org) group on September 28th at 7:00pm at NYU.
+
+* We will hold our meetup at 5:00pm that night so anyone who wants to go can still go. The recording, as usual, will be uploaded right after the meetup ends.
 
 ---
 # One Minute Paper Results
@@ -44,11 +50,11 @@ class: center, middle, inverse, title-slide
 ```{r, echo=FALSE, eval = TRUE}
 library(googlesheets4)
 library(tidyverse)
- omp <- read_sheet(one_minute_paper_results)
-# names(omp)[8] <- 'Time_Spent'
-# omp$Time_Spent <- NULL
-# omp$Time_Spent <- sapply(omp$Time_Spent, FUN = function(x) { x[[1]] })
- omp <- omp %>% dplyr::filter(Topic == 'Intro to Data (Chapter 1)')
+omp <- read_sheet(one_minute_paper_results)
+omp <- omp |> 
+ 	dplyr::filter(Class == course, 
+ 				  semester == semester,
+ 				  Topic == 'Intro to Data')
 ```
 
 .pull-left[
@@ -64,13 +70,6 @@ library(tidyverse)
 ```
 ]
 
-
----
-# Announcements
-
-* There will be no meetup next Monday, February 16th. This does not affect due dates.
-
-* I will be giving a talk on March 10th at NYU for the New York Open Statistical Programming Meetup https://nyhackr.org
 
 ---
 # Workflow
@@ -443,9 +442,9 @@ class: hide-logo
 .font60[
 
 ```{r eval=require('DT'), echo=FALSE, tidy=FALSE}
-legosets %>%
-	sample_n(100) %>% 
-	select(setID, name, year, theme, themeGroup, category, US_retailPrice, pieces, minifigs, rating) %>%
+legosets |>
+	sample_n(100) |> 
+	select(setID, name, year, theme, themeGroup, category, US_retailPrice, pieces, minifigs, rating) |>
 	DT::datatable(fillContainer = FALSE, options = list(pageLength = 10))
 ```
 
@@ -496,14 +495,14 @@ prop.table(table(legosets$category))
 Using the pipe (`|>`) operator we can chain these calls in a what is arguably a more readable format:
 
 ```{r, eval=FALSE}
-table(legosets$category) |> prop.table()
+legosets$category |> table() |> prop.table()
 ```
 ]
 
 <hr />
 
 ```{r, echo=FALSE}
-table(legosets$category) |> prop.table()
+legosets$category |> table() |> prop.table()
 ```
 
 ---
@@ -537,7 +536,7 @@ which( letters %in% c('a','e','i','o','u') )
 ### `dplyr`
 
 ```{r}
-mylego <- legosets %>% filter(themeGroup == 'Educational' & year > 2015)
+mylego <- legosets |> filter(themeGroup == 'Educational' & year > 2015)
 ```
 
 ### Base R
@@ -558,7 +557,7 @@ nrow(mylego)
 ### `dplyr`
 
 ```{r}
-mylego <- mylego %>% select(setID, pieces, theme, availability, US_retailPrice, minifigs)
+mylego <- mylego |> select(setID, pieces, theme, availability, US_retailPrice, minifigs)
 ```
 
 ### Base R
@@ -586,7 +585,7 @@ head(mylego, n = 4)
 ### `dplyr`
 
 ```{r}
-mylego %>% relocate(where(is.numeric), .after = where(is.character)) %>% head(n = 3)
+mylego |> relocate(where(is.numeric), .after = where(is.character)) |> head(n = 3)
 ```
 
 ### Base R
@@ -610,7 +609,7 @@ head(mylego2, n = 3)
 ### `dplyr`
 
 ```{r}
-mylego %>% dplyr::rename(USD = US_retailPrice) %>% head(n = 3)
+mylego |> dplyr::rename(USD = US_retailPrice) |> head(n = 3)
 ```
 
 ### Base R
@@ -633,8 +632,8 @@ head(mylego2, n = 3)
 ### `dplyr`
 
 ```{r}
-mylego %>% filter(!is.na(pieces) & !is.na(US_retailPrice)) %>% 
-	mutate(Price_per_piece = US_retailPrice / pieces) %>% head(n = 3)
+mylego |> filter(!is.na(pieces) & !is.na(US_retailPrice)) |> 
+	mutate(Price_per_piece = US_retailPrice / pieces) |> head(n = 3)
 ```
 
 ### Base R
@@ -651,7 +650,7 @@ head(mylego2, n = 3)
 
 .code80[
 ```{r}
-legosets %>% group_by(themeGroup) %>% summarize(mean_price = mean(US_retailPrice, na.rm = TRUE),
+legosets |> group_by(themeGroup) |> summarize(mean_price = mean(US_retailPrice, na.rm = TRUE),
 												sd_price = sd(US_retailPrice, na.rm = TRUE),
 												median_price = median(US_retailPrice, na.rm = TRUE),
 												n = n(),
@@ -920,8 +919,14 @@ class: left, font140
 ]
 .pull-right[
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-qrcode::qr_code(one_minute_paper) |> plot(col = c('#FAFAFA', 'black'))
+omp_link <- get_omp_link(
+	course = course,
+	semester = paste0(semester, year),
+	topic = 'Summarizing Data'
+)
+qrcode::qr_code(omp_link) |> plot(col = c('#FAFAFA', 'black'))
 ```
+.center[.font50[[Scan the QR code or click here to  
+complete the One Minute Paper](`r omp_link`)]]
 ]
 
-`r one_minute_paper`
