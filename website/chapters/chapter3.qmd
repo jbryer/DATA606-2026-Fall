@@ -38,7 +38,7 @@ MathJax.Hub.Config({
 * The expected value of a discrete random variable is computed by adding each outcome weighted by its probability.  
 `$$ E(X)=\mu=\sum_{i=1}^{k}{{x}_{i}P\left(X={x}_{i}\right)} $$`
 * The variance of a discrete random variable is computed by adding each squared deviation of an outcome from the expected value weighted by its probability. The standard deviation is the square root of the variance.  
-`$$ Var(X)={\sigma}^{2}=\sum_{i=1}^{k}{{\left({x}_{i}-\mu\right)}P\left(X={x}_{i}\right) } $$`
+`$$ Var(X)={\sigma}^{2}=\sum_{i=1}^{k}{{\left({x}_{i}-\mu\right)^2}P\left(X={x}_{i}\right) } $$`
 * The average of a linear combination of discrete random variables is computed as the sum of their averages, weighted by the constant multipliers.
 * The variance of a linear combination of independent discrete random variables is computed as the sum of their variances, weighted by the square of the constant multipliers.
 * The distribution of a continuous random variable is described by the probability density function.

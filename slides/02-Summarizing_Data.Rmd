@@ -910,11 +910,12 @@ For data visualization:
 
 
 ---
-class: left, font140
+class: left, font120
 # One Minute Paper
 
 .pull-left[
 1. What was the most important thing you learned during this class?
+
 2. What important question remains unanswered for you?
 ]
 .pull-right[
