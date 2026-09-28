@@ -1,8 +1,8 @@
 ---
 title: "Distributions"
 subtitle: "DATA 606 - Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "March 2, 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "September 28, 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -38,25 +38,35 @@ class: center, middle, inverse, title-slide
 ### `r metadata$date`
 
 ---
+# Announcements
+
+* Mirian Lima talking about how to provide your judgement to agents at [New York Open Statistical Programming Meetup](https://nyhackr.org) group tonight!
+
+* The CUNY SPS meetup scheduled for Thursday, October 1st has been canceled. Keep a lookout for when that will be rescheduled.
+
+---
 # One Minute Paper Results
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval = TRUE}
 library(googlesheets4)
-omp <- read_sheet(one_minute_paper_results)
-omp <- omp %>% dplyr::filter(Topic == 'Probability (Chapter 3)')
-source('word_cloud.R')
+library(tidyverse)
+omp <- googlesheets4::read_sheet(one_minute_paper_results)
+omp <- omp |> 
+ 	dplyr::filter(Class == course, 
+ 				  semester == semester,
+ 				  Topic == 'Probability')
 ```
 
 .pull-left[
 **What was the most important thing you learned during this class?**
-```{r, echo=FALSE, fig.height=9}
-ompWordCloud(omp$`What was the most important thing you learned during this class?`)
+```{r, echo=FALSE, cache = TRUE, fig.height=9, eval = TRUE}
+ ompWordCloud(omp$`What was the most important thing you learned during this class?`)
 ```
 ]
 .pull-right[
 **What important question remains unanswered for you?**
-```{r, echo=FALSE, fig.height=9}
-ompWordCloud(omp$`What important question remains unanswered for you?`)
+```{r, echo=FALSE, cache = TRUE, fig.height=9, eval = TRUE}
+ ompWordCloud(omp$`What important question remains unanswered for you?`)
 ```
 ]
 
@@ -265,7 +275,11 @@ y <- dnorm(x,mean=19, sd=4)
 plot(x, y, type = "l", lwd = 2, ylab='', xlab='', yaxt='n', col='blue',
 	 main=expression(paste(plain("N("), mu, plain(" = 19, "), sigma, plain(" = 4)"))))
 par(par.orig)
+```
 
+--
+
+```{r, echo=FALSE, fig.width=10, fig.height=4}
 x <- seq(-4,30,length=200)
 y <- dnorm(x,mean=0, sd=1)
 plot(x, y, type = "l", lwd = 2, xlim = c(-3.5,30), ylab='', xlab='', yaxt='n', col='green')
@@ -334,36 +348,100 @@ abline(mean(heights), sd(heights), col="blue", lwd=1.5)
 
 ]]
 
----
-# Skewness 
-
-```{r, echo=FALSE}
-set.seed(2112)
-rs <- rgamma(100,1)
-ls <- rbeta(100,3,0.5)
-
-temp <- sort(rnorm(100))
-
-st <- c(temp[16:85], rnorm(30,0,0.1))
-lt <- c(temp[1:20]-rgamma(20,1), temp[21:80], temp[81:100]+rev(rgamma(20,1)))
-
-par.orig <- par(mfrow=c(2,2), mgp=c(2,.7,0), mar=c(1,1,1,1))
-qqnorm(rs, axes=F, xlab="", ylab="", pch=19, main="Right Skewed")
-qqline(rs, col='blue')
-qqnorm(ls, axes=F, xlab="", ylab="", pch=19, main="Left Skewed")
-qqline(rs, col='blue')
-qqnorm(st, axes=F, xlab="", ylab="", pch=19, main="Short Tails")
-qqline(rs, col='blue')
-qqnorm(lt, axes=F, xlab="", ylab="", pch=19, main="Long Tails")
-qqline(rs, col='blue')
-par(par.orig)
-```
 
 ---
 # Simulated Normal Q-Q Plots 
 
 ```{r, fig.width = 10}
 DATA606::qqnormsim(heights)
+```
+
+---
+# More examples
+
+```{r}
+pop_size <- 100000
+samp_size <- 50
+distributions <- data.frame(
+    unif_pop = runif(pop_size),
+    skew_pop = rchisq(pop_size, df = 5),
+    norm_pop = rnorm(pop_size, mean = 2, sd = 1)
+)
+```
+
+```{r, echo=FALSE, fig.height = 5}
+distributions |>
+    reshape2::melt(variable.name = 'distribution') |> 
+    ggplot(aes(x = value, color = distribution)) + 
+    geom_density() + 
+    facet_wrap(~ distribution, scales = 'free', ncol = 1) +
+    theme_vs()
+```
+
+---
+# How the Q-Q Plot is constructed
+
+.pull-left[
+Let's consider a smaller sample, here of size 6.
+
+```{r}
+samp1 <- sample(distributions$skew_pop, size = 6)
+samp1
+```
+
+Next, we randomly select values from a theoretical normal distribution using the `rnorm()` function.
+
+```{r}
+samp_norm <- rnorm(length(samp1))
+samp_norm
+```
+]
+--
+.pull-right[
+We can sort both vectors and combine them in two columns.
+
+```{r}
+samp1 <- samp1 |> sort()
+samp_norm <- samp_norm |> sort()
+qq_df <- cbind(observed = samp1, 
+			   theretical = samp_norm) |> 
+	as.data.frame()
+qq_df
+```
+]
+
+---
+# How the Q-Q Plot is constructed
+
+If the observed values are follow a perfectly normal distribution, then all the point should be on the line with slope 1.
+
+```{r, fig.height = 5}
+ggplot(qq_df, aes(x = theretical, y = observed)) + geom_point() + 
+	geom_abline(slope = 1, intercept = mean(qq_df$observed))
+```
+
+---
+# Q-Q Plot for Uniform Distribution
+
+```{r}
+unif_samp <- sample(distributions$unif_pop, size = samp_size)
+VisualStats::gg_qq_plot(unif_samp, loess = TRUE)
+```
+
+---
+# Q-Q Plot for Skewed Distribution
+
+```{r}
+skew_pop <- sample(distributions$skew_pop, size = samp_size)
+VisualStats::gg_qq_plot(skew_pop, loess = TRUE)
+```
+
+---
+# Q-Q Plot for Normal Distribution
+
+```{r}
+norm_pop <- sample(distributions$norm_pop, size = samp_size)
+VisualStats::gg_qq_plot(norm_pop, loess = TRUE)
 ```
 
 ---
@@ -481,7 +559,7 @@ The probability of exactly one 1 of 4 people refusing to administer the shock is
 
 The question from the prior slide asked for the probability of given number of successes, k, in a given number of trials, n, (k = 1 success in n = 4 trials), and we calculated this probability as
 
-$$# of scenarios × P(single scenario)$$
+$$Number\ of\ scenarios × P(single scenario)$$
 
 Number of scenarios: there is a less tedious way to figure this out, we’ll get to that shortly...
 
@@ -523,20 +601,56 @@ barplot(dbinom(0:n, n, p), names.arg=0:n)
 dbinom(1, 4, p)
 ```
 
-https://shiny.rit.albany.edu/stat/binomial/
+---
+# R's built in functions for working with distributions
+
+```{r, echo=FALSE}
+VisualStats::plot_distributions(dist = 'norm', xmin = -4, xmax = 4, xvals = c(-1, 0, 0.5))
+```
+
+
+.font70[
+```{r, eval=FALSE}
+VisualStats::distributions_shiny()
+```
+]
 
 ---
-class: left, font140
+# R's built in functions for working with distributions
+
+```{r, echo=FALSE}
+VisualStats::plot_distributions(dist = 'binom', xmin = 0, xmax = 5, 
+								xvals = c(1, 2), 
+								args = list(prob = 0.35, size = 5))
+```
+
+
+.font70[
+```{r, eval=FALSE}
+VisualStats::distributions_shiny()
+```
+]
+
+
+---
+class: left, font120
 # One Minute Paper
 
 .pull-left[
 1. What was the most important thing you learned during this class?
+
 2. What important question remains unanswered for you?
 ]
 .pull-right[
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-qrcode::qr_code(one_minute_paper) |> plot(col = c('#FAFAFA', 'black'))
+omp_link <- get_omp_link(
+	course = course,
+	semester = paste0(semester, year),
+	topic = 'Distributions'
+)
+qrcode::qr_code(omp_link) |> plot(col = c('#FAFAFA', 'black'))
 ```
+.center[.font50[[Scan the QR code or click here to  
+complete the One Minute Paper](`r omp_link`)]]
 ]
 
-`r one_minute_paper`
