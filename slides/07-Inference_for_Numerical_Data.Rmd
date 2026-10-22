@@ -1,8 +1,8 @@
 ---
 title: "Inference for Numerical Data"
 subtitle: "DATA 606 - Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "March 30, 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "October 26, 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -44,7 +44,7 @@ class: center, middle, inverse, title-slide
 
 # Data Project Proposal
 
-Due April 13th<sup>ish</sup> Select a dataset that interests you. For the proposal, you need to answer the questions below.
+Due November 8<sup>th</sup> Select a dataset that interests you. For the proposal, you need to answer the questions below.
 
 .font80[
 * Research question
@@ -58,7 +58,7 @@ Due April 13th<sup>ish</sup> Select a dataset that interests you. For the propos
 * Relevant summary statistics
 ]
 
-More information including template and suggested datasets located here: https://spring2026.data606.net/assignments/project/
+More information including template and suggested datasets located here: https://`r paste0(tolower(semester), year)`.data606.net/assignments/project/
 
 
 
@@ -193,6 +193,7 @@ library(granovaGG)
 granovagg.ds(as.data.frame(hsb2[,c('read', 'write')]))
 ```
 
+Run `VisualStats::dependent_sample_shiny()` for the Shiny application.
 
 ---
 # SAT Scores by Sex
@@ -898,6 +899,29 @@ ggplot(hand_washing, aes(x = Method, y = Bacterial_Counts)) + geom_boxplot() +
 				  color = 'darkgreen', width = 0.5, size = 1) +
 	geom_point(data = tab, aes(x = group1, y = mean), color = 'blue', size = 3)
 ```
+]
+
+
+---
+class: left, font120
+# One Minute Paper
+
+.pull-left[
+1. What was the most important thing you learned during this class?
+
+2. What important question remains unanswered for you?
+]
+.pull-right[
+```{r, echo=FALSE, fig.width=5, fig.height=5}
+omp_link <- get_omp_link(
+	course = course,
+	semester = paste0(semester, year),
+	topic = 'Inference for Numerical Data'
+)
+qrcode::qr_code(omp_link) |> plot(col = c('#FAFAFA', 'black'))
+```
+.center[.font50[[Scan the QR code or click here to  
+complete the One Minute Paper](`r omp_link`)]]
 ]
 
 
