@@ -1,0 +1,17 @@
+---
+title: "Inference for Numerical Data"
+author: "Jason Bryer"
+date: 2026-10-22
+draft: false
+description: "Slides and recording for the *Inference for Numerical Data* meetup."
+categories: ["Meetups"]
+image: "2026-10-26-Inference_for_Numerical_Data.png"
+---
+
+
+[Click here](/slides/07-Inference_for_Numerical_Data.html#1) to open the slides ([PDF](/slides/07-Inference_for_Numerical_Data.pdf)).
+
+
+
+
+

@@ -43,100 +43,86 @@ Due November 8&lt;sup&gt;th&lt;/sup&gt; Select a dataset that interests you. For
 * Relevant summary statistics
 ]
 
-More information including template and suggested datasets located here: https://spring2026.data606.net/assignments/project/
+More information including template and suggested datasets located here: https://fall2026.data606.net/assignments/project/
 
 
 
 ---
-# High School &amp; Beyond Survey  
+# Family Treatment for Treating Anorexia
 
-200 randomly selected students completed the reading and writing test of the High School and Beyond survey. The results appear to the right. Does there appear to be a difference?
+The following dataset in the `MASS` package was adapted from Hand, Daly, McConway, Lunn, and Ostrowski (1993). The dataset contains the pre- and post-weight for young females who were diagnosed with anorexia. There are three treatment levels in the full dataset, control, cognitive behavoural treatment, and family treatment. We will consider only the family treatment patients.
+
+
+``` r
+data('anorexia', package = 'MASS')
+anorexia &lt;- anorexia |&gt; dplyr::filter(Treat == 'FT')
+```
+
+We have 17 observations.
+
+Research question: Is there a difference in the pre- and post-weights for the young females in the family treatment group?
+
+---
+# Family Treatment for Treating Anorexia
 
 .pull-left[
 
 ``` r
-data(hsb2) # in openintro package
-hsb2.melt &lt;- melt(hsb2[,c('id','read', 'write')], id='id')
-ggplot(hsb2.melt, aes(x=variable, y=value)) + 	geom_boxplot() + 
-	geom_point(alpha=0.2, color='blue') + xlab('Test') + ylab('Score')
-```
-
-&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-1-1.png" alt="" style="display: block; margin: auto;" /&gt;
-]
-.pull-right[
-
-``` r
-ggplot(hsb2.melt, aes(x=variable, y=value)) +
-	ggdist::stat_halfeye() +
-	geom_point(color='blue', position = position_nudge(x = -.05), pch = '-', size = 5) + 
+anorexia.melt &lt;- anorexia |&gt; dplyr::select(Prewt, Postwt) |&gt; reshape2::melt()
+ggplot(anorexia.melt, aes(x=variable, y=value)) + 	
+	geom_boxplot() + 
+	geom_point(alpha=0.2, color='blue') +
 	xlab('Test') + ylab('Score')
 ```
 
 &lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-2-1.png" alt="" style="display: block; margin: auto;" /&gt;
 ]
-
-
----
-# High School &amp; Beyond Survey  
-
+.pull-right[
 
 ``` r
-head(hsb2)
+ggplot(anorexia.melt, aes(x=variable, y=value)) +
+	ggdist::stat_halfeye() +
+	geom_point(color='blue', 
+			   position = position_nudge(x = -.05),
+			   pch = '-', size = 5) + 
+	xlab('Test') + ylab('Score')
 ```
 
-```
-## # A tibble: 6 × 11
-##      id gender race  ses    schtyp prog        read write  math science socst
-##   &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt;
-## 1    70 male   white low    public general       57    52    41      47    57
-## 2   121 female white middle public vocational    68    59    53      63    61
-## 3    86 male   white high   public general       44    33    54      58    31
-## 4   141 male   white high   public vocational    63    44    47      53    56
-## 5   172 male   white middle public academic      47    52    57      53    61
-## 6   113 male   white middle public academic      44    52    51      63    61
-```
-
-Are the reading and writing scores of each student independent of each other?
+&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-3-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
 
 
 ---
 # Analyzing Paired Data  
 
-.pull-left[
 * When two sets of observations are not independent, they are said to be paired.
 * To analyze these type of data, we often look at the difference.
 
 
 ``` r
-hsb2$diff &lt;- hsb2$read - hsb2$write
-head(hsb2$diff)
-```
-
-```
-## [1]  5  9 11 19 -5 -8
+anorexia &lt;- anorexia |&gt; dplyr::mutate(diff = Postwt - Prewt)
 ```
 
 
 ``` r
-ggplot(hsb2, aes(x = diff)) + 
-	geom_histogram(aes(y = ..density..), bins = 15, color = 1, fill = 'white') + 
+ggplot(anorexia, aes(x = diff)) + 
+	geom_histogram(aes(y = ..density..), bins = 6, color = 1, fill = 'white') + 
 	geom_density(size = 2)
 ```
-]
-.pull-right[
-&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-6-1.png" alt="" style="display: block; margin: auto;" /&gt;
-]
+
+&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-5-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
 
 ---
 # Setting the Hypothesis
 
-What are the hypothesis for testing if there is a difference between the average reading and writing scores?
+What are the hypothesis for testing if there is a difference between pre- and post-weights?
 
-`\(H_0\)`: There is no difference between the average reading and writing scores.
+`\(H_0\)`: There is no difference between the pre- and post-weights.
 
 `$$\mu_{diff} = 0$$`
 
-`\(H_A\)`: There is a difference between the average reading and writing score.
+`\(H_A\)`: There is a difference between the pre- and post-weights.
 
 `$$\mu_{diff} \ne 0$$`
 
@@ -154,61 +140,73 @@ class: font120
 ---
 # Calculating the test-statistic and the p-value 
 
-The observed average difference between the two scores is -0.545 points and the standard deviation of the difference is 8.887 points. Do these data provide convincing evidence of a difference between the average scores on the two exams (use `\(\alpha = 0.05\)`)?
+The observed average difference between the two weights is 7.26 points and the standard deviation of the difference is 7.16 points. Do these data provide convincing evidence of a difference between the average scores on the two exams (use `\(\alpha = 0.05\)`)?
 
-&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-7-1.png" alt="" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-6-1.png" alt="" style="display: block; margin: auto;" /&gt;
 
 
 ---
 # Calculating the test-statistic and the p-value 
 
-`$$Z = \frac{-0.545 - 0}{ \frac{8.887}{\sqrt{200}} } = \frac{-0.545}{0.628} = -0.87$$`
-`$$p-value = 0.1949 \times 2 = 0.3898$$`
+`$$Z = \frac{7.26 - 0}{ \frac{7.16}{\sqrt{17}} } = \frac{7.26}{4.12} = 4.18$$`
+`$$p-value = 1.43\times 10^{-5} \times 2 = 2.85\times 10^{-5}$$`
 
-Since p-value &gt; 0.05, we **fail to reject the null hypothesis**. That is, the data do not provide evidence that there is a statistically significant difference between the average reading and writing scores.
+Since p-value &lt; 0.05, we **reject the null hypothesis**. That is, the data do provide evidence that there is a statistically significant difference between pre- and post-weights.
 
 
 ``` r
-2 * pnorm(mean(hsb2$diff), mean=0, sd=sd(hsb2$diff)/sqrt(nrow(hsb2)))
+2 * pnorm(-1 * zScore, mean = 0, sd = 1)
 ```
 
 ```
-## [1] 0.3857741
+## [1] 2.9e-05
 ```
+
 
 ---
 # Evaluating the null hypothesis
 
 ## Interpretation of the p-value
 
-The probability of obtaining a random sample of 200 students where the average difference between the reading and writing scores is at least 0.545 (in either direction), if in fact the true average difference between the score is 0, is 38%.
+The probability of obtaining a random sample of 17 patients where the average difference between the pre- and post-weights is at least 7.26 (in either direction), if in fact the true average difference between the score is 0, is &lt; 0.01%.
 
 --
 ## Calculating 95% Confidence Interval
 
-`$$-0.545\pm 1.96\frac { 8.887 }{ \sqrt { 200 }  } =-0.545\pm 1.96\times 0.628=(-1.775, 0.685)$$`
 
-Note that the confidence interval spans zero!
+``` r
+ciDiff &lt;- c(meanDiff - 1.96 * seDiff, meanDiff + 1.96 * seDiff)
+```
+
+`$$7.26\pm 1.96\frac { 7.16 }{ \sqrt { 17 }  } =7.26\pm 1.96\times 1.74=(3.86, 10.67)$$`
+
+
+Note that the confidence interval does not spans zero!
 
 ---
 # Visualizing Dependent Sample Tests
 
 
 ``` r
-# remotes::install_github('briandk/granovaGG')
-library(granovaGG)
-granovagg.ds(as.data.frame(hsb2[,c('read', 'write')]))
+VisualStats::dependent_sample_vis(anorexia[,c('Prewt', 'Postwt')])
 ```
 
 &lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-9-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+.font70[Run `VisualStats::dependent_sample_shiny()` for the Shiny application.  
+This visualizaiton was adapted from [Pruzek and Helmreich (2008)](https://github.com/jbryer/DATA606-2026-Fall/blob/master/resources/ElementalGraphicsForANOVA.pdf). ]
 
 
 ---
 # SAT Scores by Sex
 
+Is there a difference in math scores between males and females?
+
+First we will load the data.
+
 
 ``` r
-data(sat)
+data(sat, package = 'DATA606')
 head(sat)
 ```
 
@@ -222,9 +220,10 @@ head(sat)
 ## 6        610      610   M
 ```
 
+We need to convert the `Math.SAT` variable to an integer and drop any rows with missing values.
 
 
-Is there a difference in math scores between males and females?
+
 
 ---
 # SAT Scores by Sex 
@@ -233,22 +232,22 @@ Is there a difference in math scores between males and females?
 
 ``` r
 tab &lt;- describeBy(sat$Math.SAT, 
-		   group=sat$Sex, 
-		   mat=TRUE, skew=FALSE)
+				  group = sat$Sex, 
+				  mat = TRUE, skew = FALSE)
 tab[,c(2,4:7)]
 ```
 
 ```
-##     group1  n     mean        sd median
-## X11      F 82 597.6829 103.70065    625
-## X12      M 80 626.8750  90.35225    645
+##     group1  n mean  sd median
+## X11      F 82  598 104    625
+## X12      M 80  627  90    645
 ```
 ]
 
 .pull-right[
 
 ``` r
-ggplot(sat, aes(x=Sex, y=Math.SAT)) + 
+ggplot(sat, aes(x = Sex, y = Math.SAT)) + 
 	geom_boxplot() +
 	geom_point(data = tab, aes(x=group1, y=mean), 
 			   color='blue', size=4)
@@ -263,7 +262,7 @@ ggplot(sat, aes(x=Sex, y=Math.SAT)) +
 
 
 ``` r
-ggplot(sat, aes(x=Math.SAT, color = Sex)) + geom_density()
+ggplot(sat, aes(x = Math.SAT, color = Sex)) + geom_density()
 ```
 
 &lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-14-1.png" alt="" style="display: block; margin: auto;" /&gt;
@@ -358,7 +357,7 @@ qt(0.025, df = 10)
 ```
 
 ```
-## [1] -2.228139
+## [1] -2.2
 ```
 
 p-value for a critical value of 2, degrees of freedom = 10
@@ -369,7 +368,7 @@ pt(2, df=10)
 ```
 
 ```
-## [1] 0.963306
+## [1] 0.96
 ```
 
 ]
@@ -387,13 +386,13 @@ t.test(Math.SAT ~ Sex, data = sat)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  Math.SAT by Sex
-## t = -1.9117, df = 158.01, p-value = 0.05773
+## t = -2, df = 158, p-value = 0.06
 ## alternative hypothesis: true difference in means between group F and group M is not equal to 0
 ## 95 percent confidence interval:
-##  -59.3527145   0.9685682
+##  -59.35   0.97
 ## sample estimates:
 ## mean in group F mean in group M 
-##        597.6829        626.8750
+##             598             627
 ```
 
 
@@ -452,11 +451,11 @@ desc
 ```
 
 ```
-##     item             Method vars n  mean       sd median min max range        se       Var
-## X11    1      Alcohol Spray    1 8  37.5 26.55991   34.5   5  82    77  9.390345  705.4286
-## X12    2 Antibacterial Soap    1 8  92.5 41.96257   91.5  20 164   144 14.836008 1760.8571
-## X13    3               Soap    1 8 106.0 46.95895  105.0  51 207   156 16.602496 2205.1429
-## X14    4              Water    1 8 117.0 31.13106  114.5  74 170    96 11.006492  969.1429
+##     item             Method vars n mean sd median min max range   se  Var
+## X11    1      Alcohol Spray    1 8   38 27     34   5  82    77  9.4  705
+## X12    2 Antibacterial Soap    1 8   92 42     92  20 164   144 14.8 1761
+## X13    3               Soap    1 8  106 47    105  51 207   156 16.6 2205
+## X14    4              Water    1 8  117 31    114  74 170    96 11.0  969
 ```
 
 .pull-left[
@@ -484,7 +483,7 @@ desc
 ```
 
 ```
-## [1] 88.25
+## [1] 88
 ```
 
 ``` r
@@ -492,7 +491,7 @@ desc
 ```
 
 ```
-## [1] 2237.613
+## [1] 2238
 ```
 
 ``` r
@@ -500,7 +499,7 @@ desc
 ```
 
 ```
-## [1] 1410.143
+## [1] 1410
 ```
 ]
 
@@ -524,11 +523,11 @@ desc
 ```
 
 ```
-##     item             Method vars n  mean       sd median min max range        se       Var contrast
-## X11    1      Alcohol Spray    1 8  37.5 26.55991   34.5   5  82    77  9.390345  705.4286   -50.75
-## X12    2 Antibacterial Soap    1 8  92.5 41.96257   91.5  20 164   144 14.836008 1760.8571     4.25
-## X13    3               Soap    1 8 106.0 46.95895  105.0  51 207   156 16.602496 2205.1429    17.75
-## X14    4              Water    1 8 117.0 31.13106  114.5  74 170    96 11.006492  969.1429    28.75
+##     item             Method vars n mean sd median min max range   se  Var contrast
+## X11    1      Alcohol Spray    1 8   38 27     34   5  82    77  9.4  705    -50.8
+## X12    2 Antibacterial Soap    1 8   92 42     92  20 164   144 14.8 1761      4.2
+## X13    3               Soap    1 8  106 47    105  51 207   156 16.6 2205     17.8
+## X14    4              Water    1 8  117 31    114  74 170    96 11.0  969     28.8
 ```
 
 ---
@@ -641,7 +640,7 @@ mean(desc$Var)
 ```
 
 ```
-## [1] 1410.143
+## [1] 1410
 ```
 ]
 
@@ -710,9 +709,9 @@ aov(Bacterial_Counts ~ Method, data = hand_washing) |&gt; summary()
 ```
 
 ```
-##             Df Sum Sq Mean Sq F value  Pr(&gt;F)   
-## Method       3  29882    9961   7.064 0.00111 **
-## Residuals   28  39484    1410                   
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)   
+## Method       3  29882    9961    7.06 0.0011 **
+## Residuals   28  39484    1410                  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
@@ -845,6 +844,50 @@ ggplot(hand_washing, aes(x = Method, y = Bacterial_Counts)) + geom_boxplot() +
 
 
 ---
+class: font90
+# Tukey Honest Significant Differences
+
+Tukey's Honestly Significant Difference (HSD) test is am alternative post-hoc test to Bonferroni that also controls the Type I error rate.
+
+1. **Calculate the HSD Threshold**: The test computes a single minimum difference value (the HSD) needed for any two group means to be considered truly distinct.
+
+	* Formula: `\(HSD = q \times \sqrt{\frac{MSE}{n}}\)`
+	* `\(q\)` is the value from the studentized range distribution based on the number of groups and error degrees of freedom.
+MSE is the Mean Square Error from the ANOVA table.
+	* `\(n\)` is the sample size per group (or the harmonic mean if sample sizes are unequal, often called the [Tukey-Kramer method](https://en.wikipedia.org/wiki/Tukey%27s_B_method)). 
+
+2. **Compare All Pairwise Means:** It finds the absolute difference between every pair of group means. 
+
+3. **Make the Decision:** If the absolute difference between two means is greater than or equal to the HSD value (or if the adjusted *p*-value is less than `\(\alpha\)`), the pair is statistically significantly different. 
+
+---
+# Tukey Honest Significant Differences (in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>)
+
+
+``` r
+aov_out &lt;- aov(Bacterial_Counts ~ Method, data = hand_washing)
+TukeyHSD(aov_out)
+```
+
+```
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = Bacterial_Counts ~ Method, data = hand_washing)
+## 
+## $Method
+##                                  diff   lwr upr p adj
+## Antibacterial Soap-Alcohol Spray   55   3.7 106  0.03
+## Soap-Alcohol Spray                 69  17.2 120  0.01
+## Water-Alcohol Spray                80  28.2 131  0.00
+## Soap-Antibacterial Soap            14 -37.8  65  0.89
+## Water-Antibacterial Soap           24 -26.8  76  0.57
+## Water-Soap                         11 -40.3  62  0.94
+```
+
+Using this method we would conclude that alcholol spray is statistically significantly different to the other three hand washing techniques with `\(p &lt; 0.05\)`.
+
+---
 class: left, font120
 # One Minute Paper
 
@@ -854,7 +897,7 @@ class: left, font120
 2. What important question remains unanswered for you?
 ]
 .pull-right[
-&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-44-1.png" alt="" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-Inference_for_Numerical_Data_files/figure-html/unnamed-chunk-45-1.png" alt="" style="display: block; margin: auto;" /&gt;
 .center[.font50[[Scan the QR code or click here to  
 complete the One Minute Paper](https://docs.google.com/forms/d/e/1FAIpQLSdkRhGhJpsgc_0LxAmJpemlf7bni8Qs0ZUmovOVvHaOwOQyhA/viewform?usp=pp_url&amp;entry.603740146=Fall2026&amp;entry.1577539103=Inference%20for%20Numerical%20Data&amp;entry.1379071784=DATA%20606)]]
 ]

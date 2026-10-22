@@ -28,7 +28,7 @@ editor_options:
 # dplyr based upon https://allisonhorst.shinyapps.io/dplyr-learnr/#section-welcome
 
 source('../config.R')
-options(width = 120)
+options(width = 120, digits = 2)
 ```
 
 class: center, middle, inverse, title-slide
@@ -63,75 +63,70 @@ More information including template and suggested datasets located here: https:/
 
 
 ---
-# High School & Beyond Survey  
+# Family Treatment for Treating Anorexia
 
-`r nrow(hsb2)` randomly selected students completed the reading and writing test of the High School and Beyond survey. The results appear to the right. Does there appear to be a difference?
+The following dataset in the `MASS` package was adapted from Hand, Daly, McConway, Lunn, and Ostrowski (1993). The dataset contains the pre- and post-weight for young females who were diagnosed with anorexia. There are three treatment levels in the full dataset, control, cognitive behavoural treatment, and family treatment. We will consider only the family treatment patients.
+
+```{r, message=FALSE, warning=FALSE}
+data('anorexia', package = 'MASS')
+anorexia <- anorexia |> dplyr::filter(Treat == 'FT')
+```
+
+We have `r nrow(anorexia)` observations.
+
+Research question: Is there a difference in the pre- and post-weights for the young females in the family treatment group?
+
+---
+# Family Treatment for Treating Anorexia
 
 .pull-left[
-```{r, fig.width=5, fig.height=3.7, eval=TRUE}
-data(hsb2) # in openintro package
-hsb2.melt <- melt(hsb2[,c('id','read', 'write')], id='id')
-ggplot(hsb2.melt, aes(x=variable, y=value)) + 	geom_boxplot() + 
-	geom_point(alpha=0.2, color='blue') + xlab('Test') + ylab('Score')
+```{r, fig.width=5, fig.height=4, eval=TRUE, message=FALSE, warning=FALSE}
+anorexia.melt <- anorexia |> dplyr::select(Prewt, Postwt) |> reshape2::melt()
+ggplot(anorexia.melt, aes(x=variable, y=value)) + 	
+	geom_boxplot() + 
+	geom_point(alpha=0.2, color='blue') +
+	xlab('Test') + ylab('Score')
 ```
 ]
 .pull-right[
-```{r, fig.width=5, fig.height=3.7, eval=TRUE}
-ggplot(hsb2.melt, aes(x=variable, y=value)) +
+```{r, fig.width=5, fig.height=4, eval=TRUE}
+ggplot(anorexia.melt, aes(x=variable, y=value)) +
 	ggdist::stat_halfeye() +
-	geom_point(color='blue', position = position_nudge(x = -.05), pch = '-', size = 5) + 
+	geom_point(color='blue', 
+			   position = position_nudge(x = -.05),
+			   pch = '-', size = 5) + 
 	xlab('Test') + ylab('Score')
-
 ```
 ]
-
-
----
-# High School & Beyond Survey  
-
-```{r}
-head(hsb2)
-```
-
-Are the reading and writing scores of each student independent of each other?
 
 
 ---
 # Analyzing Paired Data  
 
-.pull-left[
 * When two sets of observations are not independent, they are said to be paired.
 * To analyze these type of data, we often look at the difference.
 
 ```{r, fig.width=6, fig.height=4}
-hsb2$diff <- hsb2$read - hsb2$write
-head(hsb2$diff)
+anorexia <- anorexia |> dplyr::mutate(diff = Postwt - Prewt)
 ```
 
-```{r, eval=FALSE, fig.height=6}
-ggplot(hsb2, aes(x = diff)) + 
-	geom_histogram(aes(y = ..density..), bins = 15, color = 1, fill = 'white') + 
+```{r, eval=TRUE, fig.height=4}
+ggplot(anorexia, aes(x = diff)) + 
+	geom_histogram(aes(y = ..density..), bins = 6, color = 1, fill = 'white') + 
 	geom_density(size = 2)
 ```
-]
-.pull-right[
-```{r, echo=FALSE, fig.height=8}
-ggplot(hsb2, aes(x = diff)) + 
-	geom_histogram(aes(y = ..density..), bins = 15, color = 1, fill = 'white') + 
-	geom_density(size = 2)
-```
-]
+
 
 ---
 # Setting the Hypothesis
 
-What are the hypothesis for testing if there is a difference between the average reading and writing scores?
+What are the hypothesis for testing if there is a difference between pre- and post-weights?
 
-$H_0$: There is no difference between the average reading and writing scores.
+$H_0$: There is no difference between the pre- and post-weights.
 
 $$\mu_{diff} = 0$$
 
-$H_A$: There is a difference between the average reading and writing score.
+$H_A$: There is a difference between the pre- and post-weights.
 
 $$\mu_{diff} \ne 0$$
 
@@ -149,66 +144,82 @@ class: font120
 ---
 # Calculating the test-statistic and the p-value 
 
-The observed average difference between the two scores is `r mean(hsb2$diff)` points and the standard deviation of the difference is `r round(sd(hsb2$diff), digits = 3)` points. Do these data provide convincing evidence of a difference between the average scores on the two exams (use $\alpha = 0.05$)?
+The observed average difference between the two weights is `r round(mean(anorexia$diff), digits = 2)` points and the standard deviation of the difference is `r round(sd(anorexia$diff), digits = 2)` points. Do these data provide convincing evidence of a difference between the average scores on the two exams (use $\alpha = 0.05$)?
 
-```{r, fig.height = 6, echo=FALSE}
-meanDiff <- mean(hsb2$diff)
-sdDiff <- sd(hsb2$diff)
-normal_plot(mean=0, cv = c(-1 * abs(meanDiff), abs(meanDiff)), tails = 'two.sided')
+```{r, fig.height = 5.5, echo=FALSE, warning=FALSE}
+n <- nrow(anorexia)
+meanDiff <- mean(anorexia$diff)
+sdDiff <- sd(anorexia$diff)
+seDiff <- sdDiff / sqrt(n)
+zScore <- (meanDiff - 0) / seDiff
+pValue <- pnorm(-1 * zScore) * 2
+VisualStats::normal_plot(mean = 0, cv = c(-1 * abs(zScore), abs(zScore)), tails = 'two.sided')
 ```
 
 
 ---
 # Calculating the test-statistic and the p-value 
 
-$$Z = \frac{-0.545 - 0}{ \frac{8.887}{\sqrt{200}} } = \frac{-0.545}{0.628} = -0.87$$
-$$p-value = 0.1949 \times 2 = 0.3898$$
+$$Z = \frac{`r meanDiff` - 0}{ \frac{`r sdDiff`}{\sqrt{`r nrow(anorexia)`}} } = \frac{`r meanDiff`}{`r sqrt(nrow(anorexia))`} = `r zScore`$$
+$$p-value = `r pValue / 2` \times 2 = `r pValue`$$
 
-Since p-value > 0.05, we **fail to reject the null hypothesis**. That is, the data do not provide evidence that there is a statistically significant difference between the average reading and writing scores.
+Since p-value < 0.05, we **reject the null hypothesis**. That is, the data do provide evidence that there is a statistically significant difference between pre- and post-weights.
 
 ```{r}
-2 * pnorm(mean(hsb2$diff), mean=0, sd=sd(hsb2$diff)/sqrt(nrow(hsb2)))
+2 * pnorm(-1 * zScore, mean = 0, sd = 1)
 ```
+
 
 ---
 # Evaluating the null hypothesis
 
 ## Interpretation of the p-value
 
-The probability of obtaining a random sample of 200 students where the average difference between the reading and writing scores is at least 0.545 (in either direction), if in fact the true average difference between the score is 0, is 38%.
+The probability of obtaining a random sample of `r nrow(anorexia)` patients where the average difference between the pre- and post-weights is at least `r meanDiff` (in either direction), if in fact the true average difference between the score is 0, is < 0.01%.
 
 --
 ## Calculating 95% Confidence Interval
 
-$$-0.545\pm 1.96\frac { 8.887 }{ \sqrt { 200 }  } =-0.545\pm 1.96\times 0.628=(-1.775, 0.685)$$
+```{r}
+ciDiff <- c(meanDiff - 1.96 * seDiff, meanDiff + 1.96 * seDiff)
+```
 
-Note that the confidence interval spans zero!
+$$`r meanDiff`\pm 1.96\frac { `r sdDiff` }{ \sqrt { `r n` }  } =`r meanDiff`\pm 1.96\times `r seDiff`=(`r ciDiff[1]`, `r ciDiff[2]`)$$
+
+
+Note that the confidence interval does not spans zero!
 
 ---
 # Visualizing Dependent Sample Tests
 
-```{r, results='hide', fig.height = 6.5}
-# remotes::install_github('briandk/granovaGG')
-library(granovaGG)
-granovagg.ds(as.data.frame(hsb2[,c('read', 'write')]))
+```{r, results='hide', fig.height = 5.5}
+VisualStats::dependent_sample_vis(anorexia[,c('Prewt', 'Postwt')])
 ```
 
-Run `VisualStats::dependent_sample_shiny()` for the Shiny application.
+.font70[Run `VisualStats::dependent_sample_shiny()` for the Shiny application.  
+This visualizaiton was adapted from [Pruzek and Helmreich (2008)](https://github.com/jbryer/DATA606-2026-Fall/blob/master/resources/ElementalGraphicsForANOVA.pdf). ]
+
 
 ---
 # SAT Scores by Sex
 
+Is there a difference in math scores between males and females?
+
+First we will load the data.
+
 ```{r}
-data(sat)
+data(sat, package = 'DATA606')
 head(sat)
 ```
 
+We need to convert the `Math.SAT` variable to an integer and drop any rows with missing values.
+
 ```{r, echo=FALSE, results='hide', warning=FALSE}
-sat$Math.SAT <- as.integer(sat$Math.SAT)
-sat <- sat[complete.cases(sat),]
+sat <- sat |>
+	dplyr::mutate(Math.SAT = as.integer(Math.SAT)) |>
+	tidyr::drop_na()
 ```
 
-Is there a difference in math scores between males and females?
 
 ---
 # SAT Scores by Sex 
@@ -216,15 +227,15 @@ Is there a difference in math scores between males and females?
 .pull-left[
 ```{r}
 tab <- describeBy(sat$Math.SAT, 
-		   group=sat$Sex, 
-		   mat=TRUE, skew=FALSE)
+				  group = sat$Sex, 
+				  mat = TRUE, skew = FALSE)
 tab[,c(2,4:7)]
 ```
 ]
 
 .pull-right[
 ```{r, fig.height=7}
-ggplot(sat, aes(x=Sex, y=Math.SAT)) + 
+ggplot(sat, aes(x = Sex, y = Math.SAT)) + 
 	geom_boxplot() +
 	geom_point(data = tab, aes(x=group1, y=mean), 
 			   color='blue', size=4)
@@ -236,7 +247,7 @@ ggplot(sat, aes(x=Sex, y=Math.SAT)) +
 
 
 ```{r}
-ggplot(sat, aes(x=Math.SAT, color = Sex)) + geom_density()
+ggplot(sat, aes(x = Math.SAT, color = Sex)) + geom_density()
 ```
 
 ---
@@ -901,6 +912,33 @@ ggplot(hand_washing, aes(x = Method, y = Bacterial_Counts)) + geom_boxplot() +
 ```
 ]
 
+
+---
+class: font90
+# Tukey Honest Significant Differences
+
+Tukey's Honestly Significant Difference (HSD) test is am alternative post-hoc test to Bonferroni that also controls the Type I error rate.
+
+1. **Calculate the HSD Threshold**: The test computes a single minimum difference value (the HSD) needed for any two group means to be considered truly distinct.
+
+	* Formula: $HSD = q \times \sqrt{\frac{MSE}{n}}$
+	* $q$ is the value from the studentized range distribution based on the number of groups and error degrees of freedom.
+MSE is the Mean Square Error from the ANOVA table.
+	* $n$ is the sample size per group (or the harmonic mean if sample sizes are unequal, often called the [Tukey-Kramer method](https://en.wikipedia.org/wiki/Tukey%27s_B_method)). 
+
+2. **Compare All Pairwise Means:** It finds the absolute difference between every pair of group means. 
+
+3. **Make the Decision:** If the absolute difference between two means is greater than or equal to the HSD value (or if the adjusted *p*-value is less than $\alpha$), the pair is statistically significantly different. 
+
+---
+# Tukey Honest Significant Differences (in `r fontawesome::fa('r-project', fill = 'white')`)
+
+```{r}
+aov_out <- aov(Bacterial_Counts ~ Method, data = hand_washing)
+TukeyHSD(aov_out)
+```
+
+Using this method we would conclude that alcholol spray is statistically significantly different to the other three hand washing techniques with $p < 0.05$.
 
 ---
 class: left, font120

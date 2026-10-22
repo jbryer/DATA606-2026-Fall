@@ -17,11 +17,11 @@ website:
   #   type: primary # primary, secondary, success, danger, warning, info, light, dark
 
   page-navigation: false
-  title: "DATA 606 Spring 2026"
+  title: "DATA 606 Fall 2026"
   description: "DATA 606 - Statistics and Probability - CUNY School of Professional Studies"
-  site-url: "https://spring2026.data606.net/"
+  site-url: "https://fall2026.data606.net/"
 
-  repo-url: https://github.com/jbryer/DATA606-2026-Spring
+  repo-url: https://github.com/jbryer/DATA606-2026-Fall
   repo-actions: [edit, issue]
 
   open-graph: true
@@ -42,7 +42,7 @@ website:
         href: course/schedule.qmd
         text: "Schedule"
       - icon: github
-        href: https://github.com/jbryer/DATA606-2026-Spring
+        href: https://github.com/jbryer/DATA606-2026-Fall
         text: "Github"
         target: _blank
       - icon: slack
