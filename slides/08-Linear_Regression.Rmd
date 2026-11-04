@@ -178,67 +178,12 @@ http://bcdudek.net/rectangles
 
 
 ---
-# z-Scores
-
-Calcualte z-scores (standard scores) for the verbal and math scores.
-
-$$ z=\frac { y-\overline { y }  }{ s } $$
-
-```{r zscores}
-sat$Verbal.z <- (sat$Verbal - verbalMean) / verbalSD
-sat$Math.z <- (sat$Math - mathMean) / mathSD
-head(sat)
-```
-
----
-# Scatter Plot of z-Scores
-
-Scatter plot of z-scores. Note that the pattern is the same but the scales on the x- and y-axes are different.
-
-```{r scatterzscores, tidy=FALSE, echo=FALSE}
-ggplot(sat, aes(x=Verbal.z, y=Math.z)) + geom_point(color='black')
-```
-
----
-# Correlation
-
-Calculate the correlation manually using the z-score formula:
-
-$$r=\frac { \sum { { z }_{ x }{ z }_{ y } }  }{ n-1 }$$
-
-```{r correlation}
-r <- sum( sat$Verbal.z * sat$Math.z ) / ( n - 1 )
-r
-```
-
---
-
-.pull-left[
-
-Or the `cor` function in R is probably simplier. 
-```{r}
-cor(sat$Verbal, sat$Math)
-```
-
-]
-
---
-
-.pull-right[
-
-And to show that the units don't matter, calculate the correlation with the z-scores.
-```{r}
-cor(sat$Verbal.z, sat$Math.z)
-```
-
-]
-
----
 # Calculate the slope.
 
 $$m = r\frac{S_y}{S_x} = r\frac{S_{math}}{S_{verbal}}$$
 
 ```{r slope}
+r <- cor(sat$Verbal, sat$Math)
 m <- r * (mathSD / verbalSD)
 m
 ```
@@ -261,10 +206,10 @@ b
 We can now add the regression line to the scatter plot. The vertical and horizontal lines represent the mean Verbal and Math SAT scores, respectively.
 
 ```{r scatterwithregressionline, tidy=FALSE, echo=FALSE}
-ggplot(sat, aes(x=Verbal, y=Math)) + geom_point(color='black') +
-	geom_vline(xintercept=verbalMean, color='darkmagenta') +
-	geom_hline(yintercept=mathMean, color='darkmagenta') +
-	geom_abline(intercept=b, slope=m, color='red', size=2, alpha=.5)
+ggplot(sat, aes(x = Verbal, y = Math)) + geom_point(color = 'black') +
+	geom_vline(xintercept = verbalMean, color = 'darkmagenta') +
+	geom_hline(yintercept = mathMean, color = 'darkmagenta') +
+	geom_abline(intercept = b, slope = m, color = 'red', size = 2, alpha = .5)
 ```
 
 ---
@@ -274,7 +219,6 @@ To examine the residuals, we first need to calculate the predicted values of y (
 
 ```{r predicted}
 sat$Math.predicted <- m * sat$Verbal + b
-sat$Math.predicted.z <- m * sat$Verbal.z + 0
 head(sat, n=4)
 ```
 
@@ -285,7 +229,6 @@ The residuals are simply the difference between the observed and predicted value
 
 ```{r residuals}
 sat$residual <- sat$Math - sat$Math.predicted
-sat$residual.z <- sat$Math.z - sat$Math.predicted.z
 head(sat, n=4)
 ```
 
@@ -304,27 +247,27 @@ ggplot(sat, aes(x=Verbal, y=Math)) + geom_point(color='black') +
 ---
 # Scatter Plot with Residuals
 
-Using the z-scores ensures that a 1-unit change in the *x*-axis is the same as a 1-unit change in the *y*-axis. This makes it easiert to plot the residuals as squares.
 
 ```{r scatterplotwithresidualscquares, tidy=FALSE, echo=FALSE, eval=TRUE}
-ggplot(sat, aes(x = Verbal.z, y = Math.z)) +
+ggplot(sat, aes(x = Verbal, y = Math)) +
 	geom_rect(data = sat[sat$residual > 0,],
-			  aes(xmin = Verbal.z - abs(residual.z),
-			  	  xmax = Verbal.z,
-			  	  ymin = Math.predicted.z,
-			  	  ymax = Math.z,
+			  aes(xmin = Verbal - abs(residual),
+			  	  xmax = Verbal,
+			  	  ymin = Math.predicted,
+			  	  ymax = Math,
 			  	fill = abs(residual)),
 			  color = 'blue', alpha = 0.1) +
 	geom_rect(data = sat[sat$residual < 0,],
-			  aes(xmin = Verbal.z,
-			  	  xmax = Verbal.z + abs(residual.z),
-			  	  ymin = Math.z,
-			  	  ymax = Math.predicted.z,
+			  aes(xmin = Verbal,
+			  	  xmax = Verbal + abs(residual),
+			  	  ymin = Math,
+			  	  ymax = Math.predicted,
 			  	fill = abs(residual)),
 			  color = 'aquamarine4', alpha = 0.1) +
 	geom_point(color='black') +
-	geom_abline(intercept = 0, slope = m, color = 'red', size = 2, alpha = .5) +
+	geom_abline(intercept = b, slope = m, color = 'red', size = 2, alpha = .5) +
 	scale_fill_gradient(low = 'white', high = 'black') +
+	theme(legend.position = 'none') +
 	coord_equal()
 ```
 
