@@ -1,8 +1,8 @@
 ---
 title: "Maximum Likelihood Estimation and Logistic Regression"
 subtitle: "DATA 606 - Statistics & Probability for Data Analytics"
-author: Jason Bryer, Ph.D. and Angela Lui, Ph.D.
-date: "April 20, 2026"
+author: Jason Bryer, Ph.D., Angela Lui, Ph.D., and Christian Martinez
+date: "November 9, 2026"
 output:
   xaringan::moon_reader:
     css: ["assets/mtheme_max.css", "assets/fonts_mtheme_max.css"]
@@ -54,7 +54,7 @@ class: center, middle, inverse, title-slide
 ```{r, echo=FALSE, eval = TRUE}
 library(googlesheets4)
 omp <- read_sheet(one_minute_paper_results)
-omp <- omp %>% dplyr::filter(Topic == 'Linear Regression (Chapter 8)')
+omp <- omp %>% dplyr::filter(Topic == 'Linear Regression')
 source('word_cloud.R')
 ```
 
@@ -75,18 +75,6 @@ ompWordCloud(omp$`What important question remains unanswered for you?`)
 class: inverse, middle, center
 # Data Project
 
----
-# Proposal Feedback
-
-* Good range of topics, as always: sports, health, travels, food, housing, education, cost…Interesting!
-* Use caution when using causal language with observational data. Recommend relational language instead.
-* If you submitted something aside from pdf or Rpub, we returned it without a grade, with a request to resubmit.
-* If you submitted a proposal without visualizations, we did not give full credit and asked that you resubmit with visualizations included. Once you do, we will readjust your grade.
-* For those with full marks, you’re on the right track. For most, we left comments in-text and general comments for you to consider. Reminder to review the rubric as you prepare for the final presentation. Some tips to keep in mind (based on previous semester oopsies):
-* Include EDA — summary statistics and visualizations of your key variables. 
-* Include assumptions testing (diagnostic plots)
-* Be sure your analyses are focused on 1) understanding your variables in question, and 2) answering your research questions.
-* If you have questions, feel free to reach out to schedule a meeting.
 
 ---
 class: font90
@@ -990,19 +978,28 @@ plot_linear_assumption_check(lr.out, n_groups = 5)
 * [Probability concepts explained: Maximum likelihood estimation](https://towardsdatascience.com/probability-concepts-explained-maximum-likelihood-estimation-c7b4342fdbb1)
 
 
+
 ---
-class: left, font140
+class: left, font120
 # One Minute Paper
 
 .pull-left[
 1. What was the most important thing you learned during this class?
+
 2. What important question remains unanswered for you?
 ]
 .pull-right[
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-qrcode::qr_code(one_minute_paper) |> plot(col = c('#FAFAFA', 'black'))
+omp_link <- get_omp_link(
+	course = course,
+	semester = paste0(semester, year),
+	topic = 'Logistic Regression'
+)
+qrcode::qr_code(omp_link) |> plot(col = c('#FAFAFA', 'black'))
 ```
+.center[.font50[[Scan the QR code or click here to  
+complete the One Minute Paper](`r omp_link`)]]
 ]
 
-`r one_minute_paper`
+
 
