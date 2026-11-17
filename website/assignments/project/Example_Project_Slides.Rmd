@@ -27,7 +27,7 @@ elections <- read.table("2000elections.txt", header=TRUE)
 ```{r, echo=FALSE}
 source('fl_counties.R')
 elections$County_Name <- fl.counties
-library(urbnmapr)
+library(urbnmapr) # remotes::install_github("UrbanInstitute/urbnmapr")
 data("counties")
 ```
 
